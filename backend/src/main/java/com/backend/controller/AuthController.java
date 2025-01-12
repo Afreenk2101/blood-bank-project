@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,6 +23,9 @@ import com.backend.service.UserService;
 public class AuthController {
 	@Autowired
 	private UserService service;
+	
+	@Autowired
+	private JavaMailSender mailSender;
 
 	@PostMapping("/login")
 	public ResponseEntity<Object> login(@RequestBody Map<String, String> loginData) {
@@ -37,7 +42,24 @@ public class AuthController {
 	@PostMapping("/signup")
 	public ResponseEntity<Map<String, Object>> postMethodName(@RequestBody User user) {
 		User createdUser  = service.addUser(user);
+		
+		SimpleMailMessage message = new SimpleMailMessage();
+		message.setTo(createdUser.getEmail());
+		message.setText("Username:"+createdUser.getEmail()+"Password:"+createdUser.getPassword());
+		mailSender.send(message);
+		
 		return ResponseEntity.ok(Map.of("user",createdUser));
+	}
+	
+	@PostMapping("/admin-login")
+	public ResponseEntity<Map<String, String>> adminLogin(@RequestBody Map<String, String> adminData){
+		String username = "admin";
+		String password = "admin";
+		
+		if (!adminData.get("username").equals(username) && !adminData.get("password").equals(password)) {
+			return ResponseEntity.ok(Map.of("error","username or password is wrong"));
+		}
+		return ResponseEntity.ok(null);
 	}
 	
 }

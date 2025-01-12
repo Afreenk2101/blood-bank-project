@@ -22,7 +22,7 @@ import com.backend.service.UserService;
 public class UserController {
 	@Autowired
 	private UserService service;
-	// Get all teachers
+	// Get all users
     @GetMapping
     public List<User> getAllUsers() {
         return service.getAllUsers();

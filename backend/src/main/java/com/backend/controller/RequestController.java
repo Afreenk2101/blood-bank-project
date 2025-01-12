@@ -22,7 +22,7 @@ import com.backend.service.RequestService;
 public class RequestController {
 	@Autowired
 	private RequestService service;
-	// Get all teachers
+	// Get all user
     @GetMapping
     public List<Request> getAllRequest() {
         return service.getAllRequest();
@@ -46,8 +46,8 @@ public class RequestController {
         return updatedRequest != null ? ResponseEntity.ok(updatedRequest) : ResponseEntity.notFound().build();
     }
 
-    // Delete a teacher
-    @DeleteMapping("/{id}")
+    // Delete a user
+    @DeleteMapping("/{rid}")
     public ResponseEntity<Void> deleteRequest(@PathVariable int rid) {
         return service.deleteRequest(rid) ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
     }
